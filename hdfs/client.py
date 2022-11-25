@@ -1267,11 +1267,13 @@ class TokenClient(Client):
   """
 
   def __init__(self, url, token, **kwargs):
-    session = kwargs.setdefault('session', rq.Session())
-    if not session.params:
-      session.params = {}
-    session.params['delegation'] = token
+    self.token=token
     super(TokenClient, self).__init__(url, **kwargs)
+
+  def _request(self, method, url, **kwargs):
+    params=kwargs.setdefault('params',{})
+    params['delegation']=self.token
+    return super()._request(method, url, **kwargs)
 
 
 # Helpers
